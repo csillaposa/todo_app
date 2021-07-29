@@ -7,6 +7,9 @@ let express = require('express');
 
 let app = express();
 
+//to tell express to add all form values to a body object, and add that body object to the reqest object
+app.use(express.urlencoded({extended: false}));
+
 //what the app should do when it receives an incoming request to the homepage url
 //first argument is the url what we are looking out for
 //second argument is a function that runs when this request happens
@@ -68,7 +71,7 @@ app.get('/', function(req, res) {
 //first: the url we want to be able to look out for
 //second: function to run when the web browser sends a post request to this url
 app.post('/create-item', function(req, res) {
-    console.log("make this dynamic soon")
+    console.log(req.body.item)
     res.send("Thanks for submitting the form!")
 })
 
