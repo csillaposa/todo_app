@@ -24,9 +24,9 @@ app.get('/', function(req, res) {
         <h1 class="display-4 text-center py-1">To-Do App</h1>
         
         <div class="jumbotron p-3 shadow-sm">
-          <form>
+          <form action="/create-item" method="POST">
             <div class="d-flex align-items-center">
-              <input autofocus autocomplete="off" class="form-control mr-3" type="text" style="flex: 1;">
+              <input name="item" autofocus autocomplete="off" class="form-control mr-3" type="text" style="flex: 1;">
               <button class="btn btn-primary">Add New Item</button>
             </div>
           </form>
@@ -62,7 +62,19 @@ app.get('/', function(req, res) {
     </html>`)
 })
 
+//to be able to respond to the form being submitted
+//to extract what the user types and send it to the server
+//post() takes two arguments:
+//first: the url we want to be able to look out for
+//second: function to run when the web browser sends a post request to this url
+app.post('/create-item', function(req, res) {
+    console.log("make this dynamic soon")
+    res.send("Thanks for submitting the form!")
+})
+
 app.listen(3000);
 
 //to test if it works: terminal: node server (name of the js file)
+//if any changes are made, we have to do the same thing
+
 //in the browser: localhost:3000
