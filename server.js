@@ -23,7 +23,11 @@ app.use(express.urlencoded({extended: false}));
 //first argument is the url what we are looking out for
 //second argument is a function that runs when this request happens
 app.get('/', function(req, res) {
-    res.send(`<!DOCTYPE html>
+  //to read the database
+  db.collection('items').find().toArray(function(err, items) {
+    console.log(items);
+  });
+  res.send(`<!DOCTYPE html>
     <html>
     <head>
       <meta charset="UTF-8">
