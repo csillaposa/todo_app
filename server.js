@@ -20,6 +20,8 @@ MongoClient.connect(connectionString, {useNewUrlParser: true, useUnifiedTopology
   app.listen(3000);
 })
 
+//to do the same thing as below but for asynchronous requests
+app.use(express.json());
 //to tell express to add all form values to a body object, and add that body object to the reqest object
 app.use(express.urlencoded({extended: false}));
 
@@ -63,8 +65,10 @@ app.get('/', function(req, res) {
         </ul>
         
       </div>
-      
-    //to write js code for the browser environment
+
+    <!-- to make the axios library available -->
+    <script src="https://unpkg.com/axios/dist/axios.min.js"></script>  
+    <!-- to write js code for the browser environment -->
     <script src="/browser.js"></script>
     </body>
     </html>`)
@@ -81,6 +85,11 @@ app.post('/create-item', function(req, res) {
     db.collection('items').insertOne({text: req.body.item}, function() {
       res.redirect('/');
     })
+})
+
+app.post('/update-item', function(req, res) {
+  console.log(req.body.text);
+  res.send("Success");
 })
 
 //to launch the app, we use: npm run watch
