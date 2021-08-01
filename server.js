@@ -9,6 +9,10 @@ let {MongoClient} = require('mongodb');
 let app = express();
 let db;
 
+//to serve up static, existing files
+//to make the public folder available from the root of our server
+app.use(express.static('public'));
+
 //we have to include the password and the name of the db we want to connect to
 let connectionString = 'mongodb+srv://todoAppUser:todoAppUser@cluster0.6cpwg.mongodb.net/ToDoApp?retryWrites=true&w=majority';
 MongoClient.connect(connectionString, {useNewUrlParser: true, useUnifiedTopology: true}, function(err, client) {
@@ -61,7 +65,7 @@ app.get('/', function(req, res) {
       </div>
       
     //to write js code for the browser environment
-    <script>alert("Hello!")</script>
+    <script src="/browser.js"></script>
     </body>
     </html>`)
   });
