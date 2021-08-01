@@ -60,6 +60,8 @@ app.get('/', function(req, res) {
         
       </div>
       
+    //to write js code for the browser environment
+    <script>alert("Hello!")</script>
     </body>
     </html>`)
   });
