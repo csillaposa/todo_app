@@ -73,7 +73,7 @@ app.get('/', function(req, res) {
 app.post('/create-item', function(req, res) {
     //to connect to a database
     db.collection('items').insertOne({text: req.body.item}, function() {
-      res.send("Thanks for submitting the form!");
+      res.redirect('/');
     })
 })
 
