@@ -4,8 +4,17 @@
 //to install express package for creating a server that listens to incoming requests: npm install express
 //have to require in the installed package in order to be able to use it:
 let express = require('express');
+let {MongoClient} = require('mongodb');
 
 let app = express();
+let db;
+
+//we have to include the password and the name of the db we want to connect to
+let connectionString = 'mongodb+srv://todoAppUser:todoAppUser@cluster0.6cpwg.mongodb.net/ToDoApp?retryWrites=true&w=majority';
+MongoClient.connect(connectionString, {useNewUrlParser: true, useUnifiedTopology: true}, function(err, client) {
+  db = client.db();
+  app.listen(3000);
+})
 
 //to tell express to add all form values to a body object, and add that body object to the reqest object
 app.use(express.urlencoded({extended: false}));
@@ -71,13 +80,12 @@ app.get('/', function(req, res) {
 //first: the url we want to be able to look out for
 //second: function to run when the web browser sends a post request to this url
 app.post('/create-item', function(req, res) {
-    console.log(req.body.item)
-    res.send("Thanks for submitting the form!")
+    //to connect to a database
+    db.collection('items').insertOne({text: req.body.item}, function() {
+      res.send("Thanks for submitting the form!");
+    })
 })
 
-app.listen(3000);
-
-//to test if it works: terminal: node server (name of the js file)
-//if any changes are made, we have to do the same thing
+//to launch the app, we use: npm run watch
 
 //in the browser: localhost:3000
