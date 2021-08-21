@@ -29,7 +29,7 @@ app.use(express.urlencoded({extended: false}));
 //first argument is the url what we are looking out for
 //second argument is a function that runs when this request happens
 app.get('/', function(req, res) {
-  //to read the database
+  //to read the database: find() method returns data which needs to be converted so we can work with it with JS => toArray()
   db.collection('items').find().toArray(function(err, items) {
     res.send(`<!DOCTYPE html>
     <html>
@@ -44,6 +44,7 @@ app.get('/', function(req, res) {
         <h1 class="display-4 text-center py-1">To-Do App</h1>
         
         <div class="jumbotron p-3 shadow-sm">
+        <--! action attribute cntrols which url the form sends its request to when the user submits the form -->
           <form action="/create-item" method="POST">
             <div class="d-flex align-items-center">
               <input name="item" autofocus autocomplete="off" class="form-control mr-3" type="text" style="flex: 1;">
@@ -83,6 +84,7 @@ app.get('/', function(req, res) {
 app.post('/create-item', function(req, res) {
     //to connect to a database
     db.collection('items').insertOne({text: req.body.item}, function() {
+      //after submitting an item, it redirects to the base url
       res.redirect('/');
     })
 })
