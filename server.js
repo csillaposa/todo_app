@@ -4,8 +4,7 @@
 //to install express package for creating a server that listens to incoming requests: npm install express
 //have to require in the installed package in order to be able to use it:
 let express = require('express');
-let mongodb = require('mongodb').MongoClient;
-let ObjectId = require('mongodb').ObjectId;
+const { MongoClient, ObjectId } = require('mongodb');
 
 let app = express();
 let db;
@@ -16,7 +15,7 @@ app.use(express.static('public'));
 
 //we have to include the password and the name of the db we want to connect to
 let connectionString = 'mongodb+srv://todoAppUser:todoAppUser@cluster0.6cpwg.mongodb.net/ToDoApp?retryWrites=true&w=majority';
-mongodb.connect(connectionString, {useNewUrlParser: true, useUnifiedTopology: true}, function(err, client) {
+MongoClient.connect(connectionString, {useNewUrlParser: true, useUnifiedTopology: true}, function(err, client) {
   db = client.db();
   app.listen(3000);
 })
@@ -61,7 +60,7 @@ app.get('/', function(req, res) {
            <div>
               <!-- to be able to enbed data in html, so now the edit butten holds the id of the list items in the db -->
              <button date-id="${item._id}" class="edit-me btn btn-secondary btn-sm mr-1">Edit</button>
-             <button class="delete-me btn btn-danger btn-sm">Delete</button>
+             <button date-id="${item._id}" class="delete-me btn btn-danger btn-sm">Delete</button>
            </div>
          </li>`
          }).join('')}
@@ -97,8 +96,17 @@ app.post('/update-item', function(req, res) {
   //second: what we want to update on that document
   //third: a function which runs once the db action is complete
   db.collection('items').findOneAndUpdate({_id: ObjectId(req.body.id)}, {$set: {text: req.body.text}}, function() {
-    res.send("Success")
+    res.send("Success");
   });
+})
+
+app.post('/delete/item', function(req, res) {
+  //deleteOne takes two arguments:
+  //first: the document we want to delete
+  //second: function to run when the first action is complete
+  db.collection('items').deleteOne({_id: ObjectId(req.body.id)}, function() {
+    res.send("Success");
+  })
 })
 
 //to launch the app, we use: npm run watch
