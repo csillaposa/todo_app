@@ -4,7 +4,8 @@
 //to install express package for creating a server that listens to incoming requests: npm install express
 //have to require in the installed package in order to be able to use it:
 let express = require('express');
-let {MongoClient} = require('mongodb');
+let mongodb = require('mongodb').MongoClient;
+let ObjectId = require('mongodb').ObjectId;
 
 let app = express();
 let db;
@@ -15,7 +16,7 @@ app.use(express.static('public'));
 
 //we have to include the password and the name of the db we want to connect to
 let connectionString = 'mongodb+srv://todoAppUser:todoAppUser@cluster0.6cpwg.mongodb.net/ToDoApp?retryWrites=true&w=majority';
-MongoClient.connect(connectionString, {useNewUrlParser: true, useUnifiedTopology: true}, function(err, client) {
+mongodb.connect(connectionString, {useNewUrlParser: true, useUnifiedTopology: true}, function(err, client) {
   db = client.db();
   app.listen(3000);
 })
@@ -44,7 +45,7 @@ app.get('/', function(req, res) {
         <h1 class="display-4 text-center py-1">To-Do App</h1>
         
         <div class="jumbotron p-3 shadow-sm">
-        <--! action attribute cntrols which url the form sends its request to when the user submits the form -->
+        <!-- action attribute cntrols which url the form sends its request to when the user submits the form -->
           <form action="/create-item" method="POST">
             <div class="d-flex align-items-center">
               <input name="item" autofocus autocomplete="off" class="form-control mr-3" type="text" style="flex: 1;">
@@ -58,7 +59,8 @@ app.get('/', function(req, res) {
            return `<li class="list-group-item list-group-item-action d-flex align-items-center justify-content-between">
            <span class="item-text">${item.text}</span>
            <div>
-             <button class="edit-me btn btn-secondary btn-sm mr-1">Edit</button>
+              <!-- to be able to enbed data in html, so now the edit butten holds the id of the list items in the db -->
+             <button date-id="${item._id}" class="edit-me btn btn-secondary btn-sm mr-1">Edit</button>
              <button class="delete-me btn btn-danger btn-sm">Delete</button>
            </div>
          </li>`
@@ -90,10 +92,15 @@ app.post('/create-item', function(req, res) {
 })
 
 app.post('/update-item', function(req, res) {
-  console.log(req.body.text);
-  res.send("Success");
+  //findOneAndUpdate needs 3 arguments:
+  //first: which document we want to update
+  //second: what we want to update on that document
+  //third: a function which runs once the db action is complete
+  db.collection('items').findOneAndUpdate({_id: ObjectId(req.body.id)}, {$set: {text: req.body.text}}, function() {
+    res.send("Success")
+  });
 })
 
 //to launch the app, we use: npm run watch
 
-//in the browser: localhost:3000
+//in the browser: localhost: 3000
