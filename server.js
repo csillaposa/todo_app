@@ -116,7 +116,7 @@ app.post('/update-item', function(req, res) {
   });
 })
 
-app.post('/delete/item', function(req, res) {
+app.post('/delete-item', function(req, res) {
   //deleteOne takes two arguments:
   //first: the document we want to delete
   //second: function to run when the first action is complete
