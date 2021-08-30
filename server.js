@@ -26,17 +26,17 @@ app.use(express.json());
 //to tell express to add all form values to a body object, and add that body object to the reqest object
 app.use(express.urlencoded({extended: false}));
 
-function passwordProtected(req, res, next) {
-  res.set('WWW-Authenticate', 'Basic realm="Simple Todo App"');
-  console.log(req.headers.authorization);
-  if (req.headers.authorization == "Basic bGVhcm46amF2YXNjcmlwdA==") {
-    next();
-  } else {
-    res.status(401).send("Authentication required");
-  }
-}
+// function passwordProtected(req, res, next) {
+//   res.set('WWW-Authenticate', 'Basic realm="Simple Todo App"');
+//   console.log(req.headers.authorization);
+//   if (req.headers.authorization == "Basic bGVhcm46amF2YXNjcmlwdA==") {
+//     next();
+//   } else {
+//     res.status(401).send("Authentication required");
+//   }
+// }
 
-app.use(passwordProtected);
+//app.use(passwordProtected);
 
 //what the app should do when it receives an incoming request to the homepage url
 //first argument is the url what we are looking out for
@@ -73,8 +73,8 @@ app.get('/', function(req, res) {
            <span class="item-text">${item.text}</span>
            <div>
               <!-- to be able to enbed data in html, so now the edit butten holds the id of the list items in the db -->
-             <button date-id="${item._id}" class="edit-me btn btn-secondary btn-sm mr-1">Edit</button>
-             <button date-id="${item._id}" class="delete-me btn btn-danger btn-sm">Delete</button>
+             <button data-id="${item._id}" class="edit-me btn btn-secondary btn-sm mr-1">Edit</button>
+             <button data-id="${item._id}" class="delete-me btn btn-danger btn-sm">Delete</button>
            </div>
          </li>`
          }).join('')}
@@ -97,21 +97,21 @@ app.get('/', function(req, res) {
 //first: the url we want to be able to look out for
 //second: function to run when the web browser sends a post request to this url
 app.post('/create-item', function(req, res) {
-    let safeText = sanitizeHTML(req.body.text, {allowedTags: [], allowedAttributes: {}});
+    //let safeText = sanitizeHTML(req.body.text, {allowedTags: [], allowedAttributes: {}});
     //to connect to a database
-    db.collection('items').insertOne({text: safeText}, function() {
+    db.collection('items').insertOne({text: req.body.item}, function() {
       //after submitting an item, it redirects to the base url
       res.redirect('/');
     })
 })
 
 app.post('/update-item', function(req, res) {
-  let safeText = sanitizeHTML(req.body.text, {allowedTags: [], allowedAttributes: {}})
+  //let safeText = sanitizeHTML(req.body.text, {allowedTags: [], allowedAttributes: {}})
   //findOneAndUpdate needs 3 arguments:
   //first: which document we want to update
   //second: what we want to update on that document
   //third: a function which runs once the db action is complete
-  db.collection('items').findOneAndUpdate({_id: ObjectId(req.body.id)}, {$set: {text: safeText}}, function() {
+  db.collection('items').updateOne({$_id: ObjectId(req.body.id)}, {$set: {text: req.body.text}}, function() {
     res.send("Success");
   });
 })
