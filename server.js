@@ -26,17 +26,17 @@ app.use(express.json());
 //to tell express to add all form values to a body object, and add that body object to the reqest object
 app.use(express.urlencoded({extended: false}));
 
-// function passwordProtected(req, res, next) {
-//   res.set('WWW-Authenticate', 'Basic realm="Simple Todo App"');
-//   console.log(req.headers.authorization);
-//   if (req.headers.authorization == "Basic bGVhcm46amF2YXNjcmlwdA==") {
-//     next();
-//   } else {
-//     res.status(401).send("Authentication required");
-//   }
-// }
+function passwordProtected(req, res, next) {
+  res.set('WWW-Authenticate', 'Basic realm="Simple Todo App"');
+  console.log(req.headers.authorization);
+  if (req.headers.authorization == "Basic bGVhcm46amF2YXNjcmlwdA==") {
+    next();
+  } else {
+    res.status(401).send("Authentication required");
+  }
+}
 
-//app.use(passwordProtected);
+app.use(passwordProtected);
 
 //what the app should do when it receives an incoming request to the homepage url
 //first argument is the url what we are looking out for
@@ -97,21 +97,21 @@ app.get('/', function(req, res) {
 //first: the url we want to be able to look out for
 //second: function to run when the web browser sends a post request to this url
 app.post('/create-item', function(req, res) {
-    //let safeText = sanitizeHTML(req.body.text, {allowedTags: [], allowedAttributes: {}});
+    let safeText = sanitizeHTML(req.body.item, {allowedTags: [], allowedAttributes: {}});
     //to connect to a database
-    db.collection('items').insertOne({text: req.body.item}, function() {
+    db.collection('items').insertOne({text: safeText}, function() {
       //after submitting an item, it redirects to the base url
       res.redirect('/');
     })
 })
 
 app.post('/update-item', function(req, res) {
-  //let safeText = sanitizeHTML(req.body.text, {allowedTags: [], allowedAttributes: {}})
+  let safeText = sanitizeHTML(req.body.text, {allowedTags: [], allowedAttributes: {}})
   //findOneAndUpdate needs 3 arguments:
   //first: which document we want to update
   //second: what we want to update on that document
   //third: a function which runs once the db action is complete
-  db.collection('items').updateOne({_id: ObjectId(req.body.id)}, {$set: {text: req.body.text}}, function() {
+  db.collection('items').updateOne({_id: ObjectId(req.body.id)}, {$set: {text: safeText}}, function() {
     res.send("Success");
   });
 })
