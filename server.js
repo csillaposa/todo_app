@@ -111,7 +111,7 @@ app.post('/update-item', function(req, res) {
   //first: which document we want to update
   //second: what we want to update on that document
   //third: a function which runs once the db action is complete
-  db.collection('items').updateOne({$_id: ObjectId(req.body.id)}, {$set: {text: req.body.text}}, function() {
+  db.collection('items').updateOne({_id: ObjectId(req.body.id)}, {$set: {text: req.body.text}}, function() {
     res.send("Success");
   });
 })
