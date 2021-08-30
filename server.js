@@ -10,6 +10,11 @@ let sanitizeHTML = require('sanitize-html');
 let app = express();
 let db;
 
+let port = process.env.PORT;
+if (port == null || port == "") {
+  port = 3000
+}
+
 //to serve up static, existing files
 //to make the public folder available from the root of our server
 app.use(express.static('public'));
@@ -18,7 +23,7 @@ app.use(express.static('public'));
 let connectionString = 'mongodb+srv://todoAppUser:todoAppUser@cluster0.6cpwg.mongodb.net/ToDoApp?retryWrites=true&w=majority';
 MongoClient.connect(connectionString, {useNewUrlParser: true, useUnifiedTopology: true}, function(err, client) {
   db = client.db();
-  app.listen(3000);
+  app.listen(port);
 })
 
 //to do the same thing as below but for asynchronous requests
